@@ -1,5 +1,6 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import { ParkingLocation } from '@prisma/client';
+
 import { ParkingLocationInput, ParkingLocationUpdateInput } from '../types';
 
 const prisma = new PrismaClient();
