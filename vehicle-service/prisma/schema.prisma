@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model VehicleEntry {
+  id            Int       @id @default(autoincrement())
+  plateNumber   String    @map("plate_number")
+  parkingCode   String    @map("parking_code")
+  entryDatetime DateTime  @default(now()) @map("entry_datetime")
+  exitDatetime  DateTime? @map("exit_datetime")
+  chargedAmount Decimal   @default(0) @map("charged_amount") @db.Decimal(10, 2)
+  userId        Int?      @map("user_id")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  tickets       Ticket[]
+
+  @@map("vehicle_entries")
+  @@index([plateNumber])
+  @@index([parkingCode])
+  @@index([entryDatetime])
+  @@index([exitDatetime])
+}
+
+model Ticket {
+  id           Int          @id @default(autoincrement())
+  entryId      Int          @map("entry_id")
+  ticketNumber String       @unique @map("ticket_number")
+  status       TicketStatus
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  vehicleEntry VehicleEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  @@map("tickets")
+  @@index([entryId])
+  @@index([ticketNumber])
+}
+
+enum TicketStatus {
+  active
+  completed
+}
