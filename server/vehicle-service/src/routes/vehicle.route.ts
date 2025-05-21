@@ -5,6 +5,7 @@ import {
   getAllEntries,
   getEntryById,
   getBill,
+  deleteVehicleEntry,
 } from "../controllers/vehicle.controller";
 import { authenticate, authorize } from "../middlewares/auth.middleware";
 import {
@@ -369,4 +370,46 @@ router.get(
   getEntryById as RequestHandler
 );
 
+/**
+ * @swagger
+ * /{id}:
+ *   delete:
+ *     summary: Delete a vehicle entry by ID
+ *     tags: [Vehicles]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Vehicle entry ID
+ *     responses:
+ *       200:
+ *         description: Vehicle entry deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Vehicle entry not found
+ *       500:
+ *         description: Server error
+ */
+router.delete(
+  "/:id",
+  authenticate as RequestHandler,
+  authorize([UserRole.ADMIN, UserRole.ATTENDANT]) as RequestHandler,
+  deleteVehicleEntry as unknown as RequestHandler
+);
 export default router;

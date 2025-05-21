@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { 
+  recordVehicleEntry, 
+  getVehicleEntries, 
+  getVehicleEntryById 
+} from '../../services/vehicleService';
 import { FaPlus, FaEdit, FaTrash, FaArrowLeft } from 'react-icons/fa';
 
 const VehiclesPage = () => {
@@ -10,6 +14,8 @@ const VehiclesPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newVehicle, setNewVehicle] = useState({
     plateNumber: '',
+    vehicleType: 'CAR', // Default vehicle type
+    parkingCode: 'DEFAULT', // You might want to fetch available parking codes
     make: '',
     model: '',
     color: ''
@@ -20,11 +26,9 @@ const VehiclesPage = () => {
       try {
         setIsLoading(true);
         
-        const response = await axios.get('/api/vehicles', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        });
+        const response = await getVehicleEntries();
         
-        setVehicles(response.data.data || []);
+        setVehicles(response.data || []);
       } catch (err) {
         console.error('Error fetching vehicles:', err);
         setError('Failed to load vehicles. Please try again.');
@@ -47,13 +51,26 @@ const VehiclesPage = () => {
     e.preventDefault();
     
     try {
-      const response = await axios.post('/api/vehicles', newVehicle, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      // Use recordVehicleEntry from vehicleService.js
+      const entryData = {
+        plateNumber: newVehicle.plateNumber,
+        vehicleType: newVehicle.vehicleType,
+        parkingCode: newVehicle.parkingCode,
+        // You can store additional vehicle details in metadata if your backend supports it
+        metadata: {
+          make: newVehicle.make,
+          model: newVehicle.model,
+          color: newVehicle.color
+        }
+      };
       
-      setVehicles([...vehicles, response.data.data]);
+      const response = await recordVehicleEntry(entryData);
+      
+      setVehicles([...vehicles, response.data]);
       setNewVehicle({
         plateNumber: '',
+        vehicleType: 'CAR',
+        parkingCode: 'DEFAULT',
         make: '',
         model: '',
         color: ''
@@ -68,10 +85,9 @@ const VehiclesPage = () => {
   const handleDeleteVehicle = async (id) => {
     if (window.confirm('Are you sure you want to delete this vehicle?')) {
       try {
-        await axios.delete(`/api/vehicles/${id}`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        });
-        
+        // Note: Your backend doesn't seem to have a delete endpoint
+        // You might need to implement this or use a different approach
+        // For now, just remove it from the state
         setVehicles(vehicles.filter(vehicle => vehicle.id !== id));
       } catch (err) {
         console.error('Error deleting vehicle:', err);
@@ -163,7 +179,7 @@ const VehiclesPage = () => {
                 </div>
                 
                 <Link 
-                  to={`/find-parking?vehicle=${vehicle.id}`}
+                  to={`/dashboard/vehicles?vehicle=${vehicle.id}`}
                   className="block w-full py-2 bg-lime-400 text-black font-bold rounded-lg text-center hover:bg-lime-300 transition-colors"
                 >
                   Park This Vehicle

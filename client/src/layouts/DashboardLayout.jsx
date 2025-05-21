@@ -16,7 +16,7 @@ const DashboardLayout = () => {
 
   const userNavigation = [
     { name: 'Dashboard', path: '/dashboard', icon: 'home' },
-    { name: 'Find Parking', path: '/dashboard/find-parking', icon: 'search' },
+    { name: 'Find Parking', path: '/dashboard/vehicles', icon: 'search' },
     { name: 'My Bookings', path: '/dashboard/bookings', icon: 'calendar' },
     { name: 'Vehicles', path: '/dashboard/vehicles', icon: 'car' },
     { name: 'Payment History', path: '/dashboard/payments', icon: 'credit-card' },

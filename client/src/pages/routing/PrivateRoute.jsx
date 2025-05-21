@@ -1,21 +1,26 @@
-// Example PrivateRoute component (create in src/components/routing/PrivateRoute.jsx)
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+import React from "react";
+import { Navigate } from "react-router-dom";
 
 const PrivateRoute = ({ children, roles = [] }) => {
-  const isAuthenticated = localStorage.getItem('token') !== null;
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  
   // Check if user is authenticated
-  if (!isAuthenticated) {
+  const token = localStorage.getItem("token");
+  if (!token) {
     return <Navigate to="/login" />;
   }
-  
-  // Check if route requires specific roles
-  if (roles.length > 0 && !roles.includes(user.role)) {
-    return <Navigate to="/dashboard" />;
+
+  // If roles are specified, check if user has required role
+  if (roles.length > 0) {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    if (!roles.includes(user.role)) {
+      // Redirect based on user role
+      if (user.role === "admin") {
+        return <Navigate to="/admin/dashboard" />;
+      } else {
+        return <Navigate to="/dashboard" />;
+      }
+    }
   }
-  
+
   return children;
 };
 

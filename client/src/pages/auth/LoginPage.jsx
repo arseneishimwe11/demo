@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { userServiceApi } from "../../services/api";
 import AuthLayout from "../../components/auth/AuthLayout";
 import FormInput from "../../components/auth/FormInput";
 import AuthButton from "../../components/auth/AuthButton";
 import ErrorMessage from "../../components/auth/ErrorMessage";
-import { userServiceApi } from "../../services/api";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -31,17 +30,24 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      // Update to match the route in user.routes.ts
       const response = await userServiceApi.post("/users/auth/login", {
         email: formData.email,
         password: formData.password,
       });
 
       // Store token and user data
+      const userData = response.data.data.user;
       localStorage.setItem("token", response.data.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.data.user));
+      localStorage.setItem("user", JSON.stringify(userData));
 
-      navigate("/dashboard");
+      // Redirect based on user role
+      if (userData.role === "admin") {
+        navigate("/admin/dashboard");
+      } else if (userData.role === "attendant") {
+        navigate("/attendant/dashboard");
+      } else {
+        navigate("/dashboard"); // Default for drivers
+      }
     } catch (err) {
       setError(err.response?.data?.error || "Login failed. Please try again.");
     } finally {

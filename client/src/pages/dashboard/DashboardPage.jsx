@@ -86,7 +86,7 @@ const DashboardPage = () => {
         
         {/* Quick Actions */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          <Link to="/find-parking" className="bg-[rgba(15,15,15,0.6)] border border-gray-800 rounded-lg p-6 hover:border-lime-400/50 transition-colors">
+          <Link to="/dashboard/vehicles" className="bg-[rgba(15,15,15,0.6)] border border-gray-800 rounded-lg p-6 hover:border-lime-400/50 transition-colors">
             <div className="flex items-center mb-4">
               <FaParking className="text-lime-400 text-2xl mr-3" />
               <h2 className="text-xl font-semibold">Find Parking</h2>
@@ -94,7 +94,7 @@ const DashboardPage = () => {
             <p className="text-gray-400">Locate available parking spots near you</p>
           </Link>
           
-          <Link to="/vehicles" className="bg-[rgba(15,15,15,0.6)] border border-gray-800 rounded-lg p-6 hover:border-lime-400/50 transition-colors">
+          <Link to="/dashboard/vehicles" className="bg-[rgba(15,15,15,0.6)] border border-gray-800 rounded-lg p-6 hover:border-lime-400/50 transition-colors">
             <div className="flex items-center mb-4">
               <FaCar className="text-lime-400 text-2xl mr-3" />
               <h2 className="text-xl font-semibold">My Vehicles</h2>
@@ -126,7 +126,7 @@ const DashboardPage = () => {
           {activeVehicles.length === 0 ? (
             <div className="bg-[rgba(15,15,15,0.6)] border border-gray-800 rounded-lg p-6 text-center">
               <p className="text-gray-400">You don't have any active parking sessions.</p>
-              <Link to="/find-parking" className="inline-block mt-4 px-6 py-2 bg-lime-400 text-black font-bold rounded-lg hover:bg-lime-300 transition-colors">
+              <Link to="/vehicles" className="inline-block mt-4 px-6 py-2 bg-lime-400 text-black font-bold rounded-lg hover:bg-lime-300 transition-colors">
                 Find Parking
               </Link>
             </div>

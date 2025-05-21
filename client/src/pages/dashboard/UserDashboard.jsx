@@ -215,7 +215,7 @@ const UserDashboard = () => {
           <div className="bg-[rgba(15,15,15,0.6)] rounded-xl border border-gray-800 p-6">
             <h2 className="text-xl font-bold text-white mb-4">Quick Actions</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Link to="/find-parking" className="bg-[rgba(20,20,20,0.8)] hover:bg-[rgba(30,30,30,0.8)] transition-colors p-4 rounded-lg flex items-center">
+              <Link to="/dashboard/vehicles" className="bg-[rgba(20,20,20,0.8)] hover:bg-[rgba(30,30,30,0.8)] transition-colors p-4 rounded-lg flex items-center">
                 <div className="p-3 rounded-full bg-lime-400/10 text-lime-400 mr-3">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-18 0 7 7 0 0118 0z" />
@@ -224,7 +224,7 @@ const UserDashboard = () => {
                 <span className="text-white font-medium">Find Parking</span>
               </Link>
               
-              <Link to="/vehicles" className="bg-[rgba(20,20,20,0.8)] hover:bg-[rgba(30,30,30,0.8)] transition-colors p-4 rounded-lg flex items-center">
+              <Link to="/dashboard/vehicles" className="bg-[rgba(20,20,20,0.8)] hover:bg-[rgba(30,30,30,0.8)] transition-colors p-4 rounded-lg flex items-center">
                 <div className="p-3 rounded-full bg-blue-400/10 text-blue-400 mr-3">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />

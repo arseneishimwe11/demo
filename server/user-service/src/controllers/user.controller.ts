@@ -2,10 +2,34 @@ import { Request, Response } from 'express';
 import { createUser, loginUser, getAllUsers, getUserById } from '../services/user.service';
 import { UserInput, LoginInput } from '../types';
 import { AuthRequest } from '../middlewares/auth.middleware';
+import { verifyToken } from '../utils/jwt';
 
 export const register = async (req: Request, res: Response) => {
   try {
     const userData: UserInput = req.body;
+    
+    // Check if trying to create an admin
+    if (userData.role === 'admin') {
+      // Get the authorization header
+      const authHeader = req.headers.authorization;
+      
+      // If no auth header or not an admin, prevent admin creation
+      if (!authHeader) {
+        return res.status(403).json({ error: 'Only existing admins can create new admin accounts' });
+      }
+      
+      // Verify the token and check if the user is an admin
+      try {
+        const token = authHeader.split(' ')[1];
+        const decoded = verifyToken(token);
+        
+        if (decoded.role !== 'admin') {
+          return res.status(403).json({ error: 'Only existing admins can create new admin accounts' });
+        }
+      } catch (error) {
+        return res.status(403).json({ error: 'Invalid token or insufficient permissions' });
+      }
+    }
     
     const user = await createUser(userData);
     
