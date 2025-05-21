@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import AuthLayout from '../../components/auth/AuthLayout';
-import FormInput from '../../components/auth/FormInput';
-import AuthButton from '../../components/auth/AuthButton';
-import ErrorMessage from '../../components/auth/ErrorMessage';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import AuthLayout from "../../components/auth/AuthLayout";
+import FormInput from "../../components/auth/FormInput";
+import AuthButton from "../../components/auth/AuthButton";
+import ErrorMessage from "../../components/auth/ErrorMessage";
+import { userServiceApi } from "../../services/api";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    rememberMe: false
+    email: "",
+    password: "",
+    rememberMe: false,
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -20,34 +21,36 @@ const LoginPage = () => {
     const { name, value, checked, type } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
-      const response = await axios.post('/api/auth/login', {
+      // Update to match the route in user.routes.ts
+      const response = await userServiceApi.post("/users/auth/login", {
         email: formData.email,
-        password: formData.password
+        password: formData.password,
       });
-      
-      localStorage.setItem('token', response.data.body.token);
-      localStorage.setItem('user', JSON.stringify(response.data.body.user));
-      
-      navigate('/dashboard');
+
+      // Store token and user data
+      localStorage.setItem("token", response.data.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.data.user));
+
+      navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(err.response?.data?.error || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <AuthLayout 
+    <AuthLayout
       title="Welcome Back"
       subtitle="Login to your ParkEase account"
       illustrationTitle="Smart Parking Solution"
@@ -70,12 +73,20 @@ const LoginPage = () => {
 
         <div className="mb-6">
           <div className="flex justify-between mb-2">
-            <label htmlFor="password" className="text-gray-300 font-medium text-sm">Password</label>
-            <Link to="/forgot-password" className="text-lime-400 text-sm hover:text-lime-300 transition-colors">
+            <label
+              htmlFor="password"
+              className="text-gray-300 font-medium text-sm"
+            >
+              Password
+            </label>
+            <Link
+              to="/forgot-password"
+              className="text-lime-400 text-sm hover:text-lime-300 transition-colors"
+            >
               Forgot password?
             </Link>
           </div>
-          
+
           <FormInput
             id="password"
             name="password"
@@ -98,14 +109,18 @@ const LoginPage = () => {
             onChange={handleChange}
             className="h-4 w-4 bg-dark-800 border-dark-600 rounded text-lime-400 focus:ring-lime-400"
           />
-          <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-300">
+          <label
+            htmlFor="rememberMe"
+            className="ml-2 block text-sm text-gray-300"
+          >
             Remember me
           </label>
         </div>
 
-        <AuthButton onClick={() => {}}
-          type="submit" 
-          disabled={loading} 
+        <AuthButton
+          onClick={() => {}}
+          type="submit"
+          disabled={loading}
           isLoading={loading}
         >
           Sign In
@@ -113,8 +128,11 @@ const LoginPage = () => {
 
         <div className="mt-8 text-center">
           <p className="text-gray-400">
-            Don't have an account?{' '}
-            <Link to="/signup" className="text-lime-400 hover:text-lime-300 transition-colors font-medium">
+            Don't have an account?{" "}
+            <Link
+              to="/signup"
+              className="text-lime-400 hover:text-lime-300 transition-colors font-medium"
+            >
               Create account
             </Link>
           </p>

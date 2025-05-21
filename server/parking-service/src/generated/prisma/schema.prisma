@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ParkingLocation {
+  id              Int      @id @default(autoincrement())
+  code            String   @unique
+  name            String
+  totalSpaces     Int      @map("total_spaces")
+  availableSpaces Int      @map("available_spaces")
+  location        String
+  feePerHour      Decimal  @map("fee_per_hour") @db.Decimal(10, 2)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("parking_locations")
+}

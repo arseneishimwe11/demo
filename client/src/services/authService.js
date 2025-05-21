@@ -1,60 +1,35 @@
-import axios from 'axios';
+import api from './api';
 
-const API_URL = 'http://localhost:5000/api';
-
-// Create axios instance with auth header
-const authAxios = axios.create({
-  baseURL: API_URL,
-});
-
-// Add auth token to requests
-authAxios.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+// User authentication services
+export const login = async (credentials) => {
+  const response = await api.post('/auth/login', credentials);
+  if (response.data.success) {
+    localStorage.setItem('token', response.data.data.token);
+    localStorage.setItem('user', JSON.stringify(response.data.data.user));
   }
-);
-
-export const loginUser = async (email, password) => {
-  try {
-    const response = await axios.post(`${API_URL}/auth/login`, { email, password });
-    return response.data;
-  } catch (error) {
-    if (error.response) {
-      throw new Error(error.response.data.message || 'Login failed');
-    }
-    throw new Error('Network error. Please try again.');
-  }
+  return response.data;
 };
 
-export const registerUser = async (userData) => {
-  try {
-    const response = await axios.post(`${API_URL}/auth/register`, userData);
-    return response.data;
-  } catch (error) {
-    if (error.response) {
-      throw new Error(error.response.data.message || 'Registration failed');
-    }
-    throw new Error('Network error. Please try again.');
-  }
+export const register = async (userData) => {
+  const response = await api.post('/auth/register', userData);
+  return response.data;
 };
 
 export const getCurrentUser = async () => {
-  try {
-    const response = await authAxios.get(`${API_URL}/users/me`);
-    return response.data;
-  } catch (error) {
-    if (error.response) {
-      throw new Error(error.response.data.message || 'Failed to get user');
-    }
-    throw new Error('Network error. Please try again.');
-  }
+  const response = await api.get('/users/me');
+  return response.data;
 };
 
-export default authAxios;
+export const logout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+};
+
+export const isAuthenticated = () => {
+  return localStorage.getItem('token') !== null;
+};
+
+export const getStoredUser = () => {
+  const user = localStorage.getItem('user');
+  return user ? JSON.parse(user) : null;
+};

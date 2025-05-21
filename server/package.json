@@ -1,0 +1,26 @@
+{
+  "name": "parking-management-system",
+  "version": "1.0.0",
+  "description": "Microservices for Parking Management System",
+  "scripts": {
+    "start:api-gateway": "cd api-gateway && npm run dev",
+    "start:user-service": "cd user-service && npm run dev",
+    "start:parking-service": "cd parking-service && npm run dev",
+    "start:vehicle-service": "cd vehicle-service && npm run dev",
+    "start:reporting-service": "cd reporting-service && npm run dev",
+    "start:all": "concurrently -n \"GATEWAY, USER ,PARKING,VEHICLE,REPORT\" -c \"blue,green,yellow,cyan,magenta\" \"npm run start:api-gateway\" \"npm run start:user-service\" \"npm run start:parking-service\" \"npm run start:vehicle-service\" \"npm run start:reporting-service\"",
+    "start:backend": "concurrently \"npm run start:api-gateway\" \"npm run start:user-service\" \"npm run start:parking-service\" \"npm run start:vehicle-service\" \"npm run start:reporting-service\"",
+    "start:frontend": "cd ../client && npm run dev",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\""
+  },
+  "keywords": [
+    "microservices",
+    "parking",
+    "management"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}

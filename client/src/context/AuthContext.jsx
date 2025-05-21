@@ -1,5 +1,9 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { loginUser, registerUser, getCurrentUser } from '../services/authService';
+import React, { createContext, useState, useContext, useEffect } from "react";
+import {
+  loginUser,
+  registerUser,
+  getCurrentUser,
+} from "../services/authService";
 
 const AuthContext = createContext(null);
 
@@ -9,15 +13,15 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       getCurrentUser()
-        .then(data => {
+        .then((data) => {
           setUser(data.body);
         })
-        .catch(err => {
-          console.error('Failed to fetch user:', err);
-          localStorage.removeItem('token');
+        .catch((err) => {
+          console.error("Failed to fetch user:", err);
+          localStorage.removeItem("token");
         })
         .finally(() => {
           setLoading(false);
@@ -32,7 +36,7 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       const response = await loginUser(email, password);
       if (response.statusCode === 200) {
-        localStorage.setItem('token', response.body.token);
+        localStorage.setItem("token", response.body.token);
         setUser(response.body.user);
         return response.body;
       } else {
@@ -40,7 +44,7 @@ export const AuthProvider = ({ children }) => {
         return null;
       }
     } catch (err) {
-      setError(err.message || 'Login failed');
+      setError(err.message || "Login failed");
       return null;
     }
   };
@@ -56,13 +60,13 @@ export const AuthProvider = ({ children }) => {
         return null;
       }
     } catch (err) {
-      setError(err.message || 'Registration failed');
+      setError(err.message || "Registration failed");
       return null;
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     setUser(null);
   };
 
@@ -81,7 +85,7 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

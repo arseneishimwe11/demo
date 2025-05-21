@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { userServiceApi } from '../../services/api';
 import AuthLayout from "../../components/auth/AuthLayout";
 import FormInput from "../../components/auth/FormInput";
 import AuthButton from "../../components/auth/AuthButton";
@@ -45,7 +45,7 @@ const SignupPage = () => {
 
     try {
       // Update to match the route in user.routes.ts
-      const response = await axios.post("/api/users/auth/register", {
+      const response = await userServiceApi.post("/users/auth/register", {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
