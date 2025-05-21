@@ -1,22 +1,21 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import AuthLayout from '../../components/auth/AuthLayout';
-import FormInput from '../../components/auth/FormInput';
-import AuthButton from '../../components/auth/AuthButton';
-import ErrorMessage from '../../components/auth/ErrorMessage';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import AuthLayout from "../../components/auth/AuthLayout";
+import FormInput from "../../components/auth/FormInput";
+import AuthButton from "../../components/auth/AuthButton";
+import ErrorMessage from "../../components/auth/ErrorMessage";
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    telephone: '',
-    password: '',
-    confirmPassword: '',
-    acceptTerms: false
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    acceptTerms: false,
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -24,48 +23,54 @@ const SignupPage = () => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
     if (!formData.acceptTerms) {
-      setError('You must accept the Terms and Conditions');
+      setError("You must accept the Terms and Conditions");
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await axios.post('/api/auth/register', {
+      // Update to match the route in user.routes.ts
+      const response = await axios.post("/api/users/auth/register", {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
-        telephone: formData.telephone,
-        password: formData.password
+        password: formData.password,
+        // Default role is 'driver' as per the schema
       });
-      
-      localStorage.setItem('token', response.data.body.token);
-      localStorage.setItem('user', JSON.stringify(response.data.body.user));
-      
-      navigate('/dashboard');
+
+      // If registration is successful, redirect to login
+      navigate("/login", {
+        state: {
+          message:
+            "Registration successful! Please log in with your new account.",
+        },
+      });
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(
+        err.response?.data?.error || "Registration failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <AuthLayout 
+    <AuthLayout
       title="Create Account"
       subtitle="Sign up to get started with ParkEase"
       illustrationTitle="Seamless Parking Experience"
@@ -111,24 +116,13 @@ const SignupPage = () => {
         />
 
         <FormInput
-          id="telephone"
-          name="telephone"
-          type="tel"
-          label="Phone Number"
-          value={formData.telephone}
-          onChange={handleChange}
-          placeholder="+1 (555) 000-0000"
-          autoComplete="tel"
-        />
-
-        <FormInput
           id="password"
           name="password"
           type="password"
           label="Password"
           value={formData.password}
           onChange={handleChange}
-          placeholder="••••••••"
+          placeholder="••••••••••••"
           required
           autoComplete="new-password"
         />
@@ -140,7 +134,7 @@ const SignupPage = () => {
           label="Confirm Password"
           value={formData.confirmPassword}
           onChange={handleChange}
-          placeholder="••••••••"
+          placeholder="••••••••••••"
           required
           autoComplete="new-password"
         />
@@ -154,14 +148,21 @@ const SignupPage = () => {
             onChange={handleChange}
             className="h-4 w-4 bg-dark-800 border-dark-600 rounded text-lime-400 focus:ring-lime-400"
           />
-          <label htmlFor="acceptTerms" className="ml-2 block text-sm text-gray-300">
-            I agree to the <Link to="/terms" className="text-lime-400 hover:text-lime-300">Terms and Conditions</Link>
+          <label
+            htmlFor="acceptTerms"
+            className="ml-2 block text-sm text-gray-300"
+          >
+            I agree to the{" "}
+            <Link to="/terms" className="text-lime-400 hover:text-lime-300">
+              Terms and Conditions
+            </Link>
           </label>
         </div>
 
-        <AuthButton onClick={() => {}}
-          type="submit" 
-          disabled={loading} 
+        <AuthButton
+          onClick={() => {}}
+          type="submit"
+          disabled={loading}
           isLoading={loading}
         >
           Create Account
@@ -169,8 +170,11 @@ const SignupPage = () => {
 
         <div className="mt-8 text-center">
           <p className="text-gray-400">
-            Already have an account?{' '}
-            <Link to="/login" className="text-lime-400 hover:text-lime-300 transition-colors font-medium">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-lime-400 hover:text-lime-300 transition-colors font-medium"
+            >
               Sign in
             </Link>
           </p>
